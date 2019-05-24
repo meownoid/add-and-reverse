@@ -104,6 +104,14 @@ def main():
         help='multiprocessing chunk size'
     )
     parser.add_argument(
+        '--start', '-s',
+        dest='start',
+        type=int,
+        action='store',
+        default=None,
+        help='overrides starting number'
+    )
+    parser.add_argument(
         '--quiet', '-q',
         dest='quiet',
         action='store_const',
@@ -119,7 +127,7 @@ def main():
     prepare_db(conn)
 
     results = load_results(conn)
-    start = load_last_number(conn)
+    start = args.start if args.start is not None else load_last_number(conn)
     end = start + args.numbers
 
     if not args.quiet:
