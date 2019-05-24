@@ -124,7 +124,7 @@ def main():
 
     if not args.quiet:
         print(f'Start: {start}')
-        print(f'End: {end}')
+        print(f'End: {end - 1}')
         print(f'Number of processes: {args.threads}')
 
     n_found = 0
