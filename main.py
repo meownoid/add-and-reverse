@@ -1,10 +1,11 @@
 import datetime
 import sqlite3
 import argparse
+from collections import ChainMap
 from typing import Dict
 from multiprocessing import Pool
 
-from _fast import check
+from _fast import check, check_range
 
 
 def prepare_db(conn: sqlite3.Connection) -> None:
@@ -93,15 +94,7 @@ def main():
         type=int,
         action='store',
         default=100000,
-        help='number to check'
-    )
-    parser.add_argument(
-        '--chunk-size', '-c',
-        dest='chunk_size',
-        type=int,
-        action='store',
-        default=1000,
-        help='multiprocessing chunk size'
+        help='number to check in one process'
     )
     parser.add_argument(
         '--start', '-s',
@@ -122,35 +115,48 @@ def main():
 
     args = parser.parse_args()
 
+    assert args.threads > 0
+    assert args.numbers > 0
+    assert args.start >= 0 if args.start is not None else True
+
     conn = sqlite3.connect(args.database)
 
     prepare_db(conn)
 
-    results = load_results(conn)
+    old_results = load_results(conn)
+    new_results = {}
+    all_results = ChainMap(old_results, new_results)
+
     start = args.start if args.start is not None else load_last_number(conn)
-    end = start + args.numbers
+
+    n_found = 0
+    ranges = []
+
+    end = start
+    for _ in range(args.threads):
+        ranges.append((end, end + args.numbers))
+        end += args.numbers
 
     if not args.quiet:
         print(f'Start: {start}')
         print(f'End: {end - 1}')
         print(f'Number of processes: {args.threads}')
 
-    n_found = 0
-
     with Pool(args.threads) as pool:
-        for number, iterations in zip(
-                range(start, end),
-                pool.imap(check, range(start, end), chunksize=args.chunk_size)
-        ):
-            if iterations == -1:
-                continue
+        for res in pool.starmap(check_range, ranges, chunksize=1):
+            for key, value in res.items():
+                if key not in all_results:
+                    n_found += 1
+                    new_results[key] = value
+                    continue
 
-            if iterations not in results:
-                results[iterations] = number
-                n_found += 1
-                insert_result(conn, iterations, number)
+                if value < all_results[key]:
+                    new_results[key] = value
 
-    insert_last_number(conn, end - 1)
+    for key, value in new_results.items():
+        insert_result(conn, key, value)
+
+    insert_last_number(conn, end)
 
     if not args.quiet:
         print(f'Found new numbers: {n_found}')

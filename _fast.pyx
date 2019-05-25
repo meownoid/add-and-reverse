@@ -1,4 +1,5 @@
 # cython: language_level=3, boundscheck=False, wraparound=False, initializedcheck=False, nonecheck=False, cdivision=True
+from typing import Dict
 import numpy as np
 
 DEF MAX_ITERS = 200
@@ -62,3 +63,18 @@ cdef int _check(long n, int[:] xs) nogil:
 
 def check(n: int) -> int:
     return _check(n, np.zeros(TOTAL_SIZE, dtype=np.int32))
+
+
+def check_range(a: int, b: int) -> Dict[int, int]:
+    result = {}
+
+    for n in range(a, b):
+        r = check(n)
+
+        if r == -1:
+            continue
+
+        if r not in result:
+            result[r] = n
+
+    return result
