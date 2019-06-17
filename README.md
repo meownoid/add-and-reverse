@@ -26,7 +26,7 @@ Second iteration:
 
 ## Solution
 
-Let's just iterate over all natural numbers from 1 to infinity, applying to them add-and-reverse operation iteratively, 200 iteration maximum.
+Let's just iterate over all natural numbers from 1 to infinity, applying to them add-and-reverse operation iteratively, 200 iterations maximum.
 At some point we will find all first 200 most delayed palindromes.
 
 The key is efficiency. My implementation is written in Cython and paralleled using OpenMP.
@@ -36,7 +36,7 @@ It achieves the performance of `275000` numbers per second per thread.
 I recommend building this program in-place.
 
 ```bash
-https://github.com/meownoid/add_and_reverse.git
+git clone https://github.com/meownoid/add_and_reverse.git
 cd add_and_reverse
 pip install -r requirements.txt
 cythonize -ai _fast.pyx
