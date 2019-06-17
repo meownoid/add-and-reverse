@@ -1,15 +1,43 @@
 # Most delayed palindromes generator
 
-This is a program that I used to solve little quiz back in the university.
+Utility that I used to solve little programming quiz back at the university.
 
 ## Problem statement
 
+Most delayed palindrome is the smallest decimal natural number which in exactly N iterations of the reverse-and-add operation results to the palindrome in the duodecimal system.
+
+Palindrome is the number that satisfies `str(n) == reversed(str(n))`.
+
+Reverse-and-add operation can be defined as `f(n) = n + int(reversed(str(n)))`.
+
+### Example
+
+Let's see an example of number 23 (decimal) = 1B (duodecimal).
+
+First iteration:
+
+1B + 1B = 110 (duodecimal)
+
+Second iteration:
+
+110 + 110 = 121 (duodecimal)
+
+121 is a palindrome which makes 23 second most delayed palindrome. The first one is 12 and the zero one is 1.
+
 ## Solution
+
+Let's just iterate over all natural numbers from 1 to infinity, applying to them add-and-reverse operation iteratively, 200 iteration maximum.
+At some point we will find all first 200 most delayed palindromes.
+
+The key is efficiency. My implementation is written in Cython and paralleled using OpenMP.
+It achieves the performance of `275000` numbers per second per thread.
 
 ## Usage
 I recommend building this program in-place.
 
 ```bash
+https://github.com/meownoid/add_and_reverse.git
+cd add_and_reverse
 pip install -r requirements.txt
 cythonize -ai _fast.pyx
 ```
@@ -27,4 +55,110 @@ Number of processes: 8
 Found new numbers: 45
 ```
 
-Now the first 45 found numbers are stored in the `db.sqlite`.
+Now the first 45 found numbers are stored in the `db.sqlite`. Starting the program next time will restore last saved state.
+
+## Results (up to 100)
+
+| n | result |
+|---|--------|
+0|1
+1|12
+2|23
+3|83
+4|95
+5|236
+6|107
+7|248
+8|267
+9|1139
+10|1847
+11|2445
+12|1547
+13|273
+14|131
+15|21996
+16|1835
+17|274
+18|280
+19|1535
+20|22404
+21|22275
+22|21655
+23|21645
+24|22048
+25|21862
+26|3587
+27|3449
+28|39736
+29|40607
+30|41471
+31|43187
+32|21921
+33|21726
+34|21754
+35|22162
+36|30524
+37|15647
+38|229079
+39|22090
+40|26632
+41|62987
+42|29806
+43|333210
+44|146123
+45|22148
+46|30951
+47|267704
+48|271143
+49|83195
+50|29514
+51|2996385
+52|3003944
+53|3004326
+54|3741686
+55|2997888
+56|3006611
+57|3006407
+58|3087848
+59|3108534
+60|3250214
+61|4745796
+62|4230573
+63|3002068
+64|5482792
+65|3002589
+66|3006222
+67|4230137
+68|3055027
+69|3003385
+70|3000658
+71|3735496
+72|4996357
+73|3058524
+74|53766429
+75|29867135
+76|5478765
+77|3006523
+78|3000199
+79|996191
+80|255738
+81|145931
+82|143855
+83|353940
+84|430124574
+85|430121283
+86|431991805
+87|430114053
+88|430140883
+89|430561503
+90|430115012
+91|430197084
+92|179169803
+93|36038359
+94|23906759
+95|286673255
+96|46158332
+97|27117431
+98|503428020
+99|7453043706
+100|3009901223
