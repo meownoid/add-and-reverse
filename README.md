@@ -36,7 +36,7 @@ It achieves the performance of `275000` numbers per second per thread (with 200 
 I recommend building this program in-place.
 
 ```bash
-git clone https://github.com/meownoid/add_and_reverse.git
+git clone https://github.com/meownoid/add-and-reverse.git
 cd add_and_reverse
 pip install -r requirements.txt
 cythonize -ai _fast.pyx
