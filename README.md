@@ -1,14 +1,17 @@
 # Most delayed palindromes generator
 
-Utility that I used to solve little programming quiz back at the university.
+This is an utility that I used to solve little programming quiz back at the university.
 
 ## Problem statement
 
-Most delayed palindrome is the smallest decimal natural number which in exactly N iterations of the reverse-and-add operation results to the palindrome in the duodecimal system.
+We asked to find the most delayed palindrome for any natural number.
+
+Most delayed palindrome of N is a smallest decimal natural number which in exactly N iterations of
+the reverse-and-add operation results in the palindrome in the duodecimal system.
 
 Palindrome is the number that satisfies `str(n) == reversed(str(n))`.
 
-Reverse-and-add operation can be defined as `f(n) = n + int(reversed(str(n)))`.
+Reverse-and-add operation can be defined as `lambda n: n + int(reversed(str(n)))`.
 
 ### Example
 
@@ -22,40 +25,58 @@ Second iteration:
 
 110 + 110 = 121 (duodecimal)
 
-121 is a palindrome which makes 23 second most delayed palindrome. The first one is 12 and the zero one is 1.
+121 (duodecimal) is a palindrome which makes 23 (decimal) second 
+most delayed palindrome. The first one is 12 and the zeroth one is 1.
 
 ## Solution
 
-Let's just iterate over all natural numbers from 1 to infinity, applying to them add-and-reverse operation iteratively, 200 iterations maximum.
-At some point we will find all first 200 most delayed palindromes.
+Let's just iterate over all natural numbers from 1 to infinity, applying to them
+add-and-reverse operation iteratively, M iterations maximum. At some point we will
+find all first M most delayed palindromes.
 
-The key is efficiency. My implementation is written in Cython and paralleled using multiprocessing.
-It achieves the performance of `275000` numbers per second per thread (with 200 iterations per number).
+The key is efficiency. My implementation is written in Cython and is paralleled using multiprocessing.
+It achieves the performance of `300000` numbers per second per thread
+on the Intel Core i5 1.4 Ghz (with 200 iterations per number).
 
 ## Usage
-I recommend building this program in-place.
 
-```bash
+Clone the repository.
+
+```shell script
 git clone https://github.com/meownoid/add-and-reverse.git
 cd add_and_reverse
+```
+
+Install dependencies.
+
+```shell script
 pip install -r requirements.txt
 cythonize -ai _fast.pyx
 ```
 
-After that you should be able to start computation:
-```bash
+Build Cython code.
+
+```shell script
+cythonize -ai _fast.pyx
+```
+
+After that you should be able to start computation.
+
+```shell script
 python main.py --threads 8 --numbers 10000
 ```
 
-You should see something like this:
-```bash
+Output should look like following.
+
+```
 Start: 1
 End: 80000
 Number of processes: 8
 Found new numbers: 45
 ```
 
-Now the first 45 found numbers are stored in the `db.sqlite`. Starting the program next time will restore last saved state.
+Now the first 45 found numbers are stored in the `db.sqlite`.
+Starting the program next time will restore last saved state and computation will continue.
 
 ## Results (up to 100)
 
