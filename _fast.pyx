@@ -1,5 +1,5 @@
 # cython: language_level=3, boundscheck=False, wraparound=False, initializedcheck=False, nonecheck=False, cdivision=True
-from typing import Dict, List
+from typing import Dict
 import numpy as np
 
 DEF MAX_ITERS = 200
