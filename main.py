@@ -6,7 +6,7 @@ from collections import ChainMap
 from typing import Dict
 from multiprocessing import Pool
 
-from _fast import check, check_range
+from _fast import check_range
 
 
 def prepare_db(conn: sqlite3.Connection) -> None:
