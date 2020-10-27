@@ -6,12 +6,15 @@ This is an utility that I used to solve little programming quiz back at the univ
 
 We asked to find the most delayed palindrome for any natural number.
 
-Most delayed palindrome of N is a smallest decimal natural number which in exactly N iterations of
-the reverse-and-add operation results in the palindrome in the duodecimal system.
+Most delayed palindrome of N is a **smallest** decimal natural number which in **exactly** N iterations of
+the reverse-and-add operation results in the palindrome in the duodecimal system (and at none
+of the previous iterations it is a palindrome).
 
-Palindrome is the number that satisfies `str(n) == reversed(str(n))`.
+Palindrome is the number that satisfies `str(n) == ''.join(reversed(str(n)))` (assuming str works
+in duodecimal system).
 
-Reverse-and-add operation can be defined as `lambda n: n + int(reversed(str(n)))`.
+Reverse-and-add operation can be defined as `lambda n: n + int(reversed(str(n)))` (assuming str works
+in duodecimal system).
 
 ### Example
 
@@ -35,7 +38,7 @@ add-and-reverse operation iteratively, M iterations maximum. At some point we wi
 find all first M most delayed palindromes.
 
 The key is efficiency. My implementation is written in Cython and is paralleled using multiprocessing.
-It achieves the performance of `300000` numbers per second per thread
+It achieves the performance of `14277` numbers per second per thread
 on the Intel Core i5 1.4 Ghz (with 200 iterations per number).
 
 ## Usage
@@ -71,12 +74,41 @@ Output should look like following.
 ```
 Start: 1
 End: 80000
-Number of processes: 8
+Number of threads: 8
 Found new numbers: 45
+Bye
 ```
 
 Now the first 45 found numbers are stored in the `db.sqlite`.
 Starting the program next time will restore last saved state and computation will continue.
+
+To print results and exit use the `--results` argument.
+
+```shell script
+python main.py --results
+```
+
+To benchmark performance while computing use the `--benchmark` argument.
+
+```shell script
+python main.py --benchmark
+```
+
+Benchmark results will be printed after the computation.
+
+```
+Benchmark results:
+    Total time: 8.755 seconds
+    Numbers per second: 114223
+    Numbers per second per thread: 14277
+```
+
+To run tests use `pytest`.
+
+```shell script
+pip install pytest
+pytest test.py
+```
 
 ## Results (up to 100)
 

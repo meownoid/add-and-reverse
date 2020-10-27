@@ -1,5 +1,4 @@
 *.so
-*.c
 *.sqlite
 __pycache__/
 .idea/
